@@ -1,4 +1,4 @@
-name: launch trivy
+name: launch clair
 
 on:
   workflow_dispatch:
