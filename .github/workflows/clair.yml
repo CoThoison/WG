@@ -22,30 +22,15 @@ jobs:
         run: ./mvnw clean install
 
       - name: Build Docker Image
-        run: docker build -f Dockerfile -t webgoat/webgoat:${{ github.sha }} .
-
-      - name: Save Docker image
-        run: |
-          docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
-
-      - name: Start PostgreSQL Database
-        run: |
-          docker run -d --name clair-db \
-            -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e POSTGRES_USER=${{ secrets.DB_USER }} \
-            -e POSTGRES_DB=clairdb \
-            postgres:latest
-        # Démarrage de la base de données PostgreSQL avec des secrets pour l'utilisateur et le mot de passe
+        run: docker build -f Dockerfile -t webgoat/webgoat .
 
       - name: Run Clair V4
         uses: quay/clair-action@main
         with:
-          image-path: ${{ github.sha }}
+          image-path: webgoat/webgoat
           format: sarif
           output: clair_results.sarif
-          db-file-url: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/clairdb
-        # Spécification de l'URL de la base de données PostgreSQL
-
+  
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
