@@ -32,7 +32,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
-          output: trivy-report.json
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
