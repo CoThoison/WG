@@ -28,10 +28,13 @@ jobs:
         run: ./mvnw clean install
 
       - name: Build Docker Image
-        run: docker build --no-cache -f Dockerfile -t webgoat/webgoat:${{ github.sha }} .
+        run: docker build -t webgoat/webgoat:${{ github.sha }} .
 
       - name: List Docker images
         run: docker images
+
+      - name: Push Docker Image
+        run: docker push webgoat/webgoat:${{ github.sha }}
 
       - name: Get image digest
         id: digest
