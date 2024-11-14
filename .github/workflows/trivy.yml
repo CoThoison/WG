@@ -33,7 +33,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          cache: 'true'
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
