@@ -33,6 +33,13 @@ jobs:
       - name: List Docker images
         run: docker images
 
+      - name: Get image digest
+        id: digest
+        run: |
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' webgoat/webgoat:${{ github.sha }})
+          echo "Image digest: $DIGEST"
+          echo "::set-output name=digest::$DIGEST"
+
       - name: Save Docker image
         run: |
           docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
@@ -40,7 +47,7 @@ jobs:
       - name: Run Clair V4
         uses: quay/clair-action@main
         with:
-          image-path: ${{ github.sha }}
+          image-path: ${{ steps.digest.outputs.digest }}
           db-file: matcher.db
           format: sarif
           output: clair_results.sarif
