@@ -30,7 +30,12 @@ jobs:
 
       - name: Start PostgreSQL Database
         run: |
-          docker run -d --name clair-db -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} -e POSTGRES_USER=${{ secrets.DB_USER }} -e POSTGRES_DB=clairdb postgres:latest
+          docker run -d --name clair-db \
+            -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e POSTGRES_USER=${{ secrets.DB_USER }} \
+            -e POSTGRES_DB=clairdb \
+            postgres:latest
+        # Démarrage de la base de données PostgreSQL avec des secrets pour l'utilisateur et le mot de passe
 
       - name: Run Clair V4
         uses: quay/clair-action@main
@@ -38,7 +43,8 @@ jobs:
           image-path: ${{ github.sha }}
           format: sarif
           output: clair_results.sarif
-          db-url: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/clairdb
+          db-file-url: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/clairdb
+        # Spécification de l'URL de la base de données PostgreSQL
 
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v2
