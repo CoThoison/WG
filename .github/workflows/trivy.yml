@@ -28,10 +28,11 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: 'webgoat/webgoat'
-          format: 'json'
+          format: 'table'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'LOW,MEDIUM,HIGH,CRITICAL'
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          output: trivy-report.json
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
