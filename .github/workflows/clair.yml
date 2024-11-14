@@ -28,13 +28,18 @@ jobs:
         run: |
           docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
 
+      - name: Start PostgreSQL Database
+        run: |
+          docker run -d --name clair-db -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} -e POSTGRES_USER=${{ secrets.DB_USER }} -e POSTGRES_DB=clairdb postgres:latest
+
       - name: Run Clair V4
         uses: quay/clair-action@main
         with:
           image-path: ${{ github.sha }}
           format: sarif
           output: clair_results.sarif
-  
+          db-url: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/clairdb
+
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
