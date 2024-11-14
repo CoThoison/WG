@@ -36,4 +36,4 @@ jobs:
         env:
           TRIVY_DB_REPOSITORY: 'aquasec/trivy-db:2'
           TRIVY_JAVA_DB_REPOSITORY: 'aquasec/trivy-java-db:1'
-          TRIVY_TIMEOUT: '10m'
+          TRIVY_TIMEOUT: '20m'
