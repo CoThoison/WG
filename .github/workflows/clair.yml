@@ -30,6 +30,10 @@ jobs:
       - name: Build Docker Image
         run: docker build -f Dockerfile -t webgoat/webgoat:${{ github.sha }} .
 
+      - name: Verify Docker image
+        run: |
+          docker images | grep webgoat/webgoat:${{ github.sha }}
+
       - name: Save Docker image
         run: |
           docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
@@ -41,11 +45,13 @@ jobs:
           db-file: matcher.db
           format: sarif
           output: clair_results.sarif
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: sarif
           path: clair_results.sarif
+
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
