@@ -12,6 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Grab cache DB
+        uses: actions/cache@v3
+        with:
+          path: matcher.db
+          key: matcher.db
+
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
@@ -22,15 +28,24 @@ jobs:
         run: ./mvnw clean install
 
       - name: Build Docker Image
-        run: docker build -f Dockerfile -t webgoat/webgoat .
+        run: docker build -f Dockerfile -t webgoat/webgoat:${{ github.sha }} .
+
+      - name: Save Docker image
+        run: |
+          docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
 
       - name: Run Clair V4
         uses: quay/clair-action@main
         with:
-          image-path: webgoat/webgoat
+          image-path: ${{ github.sha }}
+          db-file: matcher.db
           format: sarif
           output: clair_results.sarif
-  
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sarif
+          path: clair_results.sarif
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
