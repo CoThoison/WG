@@ -43,3 +43,4 @@ jobs:
           ignore-base: true
           ignore-unchanged: true
           only-fixed: true
+          organization: my-docker-org
