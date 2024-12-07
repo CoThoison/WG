@@ -1,4 +1,4 @@
-name: launch clair
+name: launch docker scout
 
 on:
   workflow_dispatch:
@@ -34,14 +34,12 @@ jobs:
         run: |
           docker save -o my-app.tar my-app:${{ github.sha }}
 
-      - name: Scan with Clair
-        uses: quay/clair-action@main
+      - name: Docker Scout
+        id: docker-scout
+        uses: docker/scout-action@v1
         with:
-          image-path: my-app.tar
-          format: sarif
-          output: clair_results.sarif
-
-      - name: Upload SARIF Report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: clair_results.sarif
+          command: cves,recommendations,compare
+          to-latest: true
+          ignore-base: true
+          ignore-unchanged: true
+          only-fixed: true
