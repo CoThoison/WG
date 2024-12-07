@@ -28,11 +28,11 @@ jobs:
         run: ./mvnw clean install
 
       - name: Build Docker Image
-        run: docker build -t webgoat/webgoat:${{ github.sha }} .
+        run: docker build -t my-app:${{ github.sha }} .
 
       - name: Save Docker image
         run: |
-          docker save -o my-app.tar webgoat/webgoat:${{ github.sha }}
+          docker save -o my-app.tar my-app:${{ github.sha }}
 
       - name: Scan with Clair
         uses: quay/clair-action@main
