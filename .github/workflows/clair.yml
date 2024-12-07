@@ -30,38 +30,18 @@ jobs:
       - name: Build Docker Image
         run: docker build -t webgoat/webgoat:${{ github.sha }} .
 
-      - name: List Docker images
-        run: docker images
-
-      - name: Push Docker Image
-        run: docker push webgoat/webgoat:${{ github.sha }}
-
-      - name: Get image digest
-        id: digest
-        run: |
-          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' webgoat/webgoat:${{ github.sha }})
-          echo "Image digest: $DIGEST"
-          echo "::set-output name=digest::$DIGEST"
-
       - name: Save Docker image
         run: |
-          docker save -o ${{ github.sha }} webgoat/webgoat:${{ github.sha }}
+          docker save -o my-app.tar webgoat/webgoat:${{ github.sha }}
 
-      - name: Run Clair V4
+      - name: Scan with Clair
         uses: quay/clair-action@main
         with:
-          image-path: ${{ steps.digest.outputs.digest }}
-          db-file: matcher.db
+          image-path: my-app.tar
           format: sarif
           output: clair_results.sarif
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: sarif
-          path: clair_results.sarif
-
-      - name: Upload sarif
+      - name: Upload SARIF Report
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: clair_results.sarif
