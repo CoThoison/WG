@@ -39,7 +39,5 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves,recommendations
-          to-latest: true
-          ignore-base: true
           ignore-unchanged: true
           only-fixed: true
