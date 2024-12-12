@@ -8,5 +8,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Call Trivy
         uses: ./.github/workflows/trivy.yml
