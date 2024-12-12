@@ -1,0 +1,12 @@
+name: Pipeline
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Trivy
+        uses: ./.github/workflows/trivy.yml
