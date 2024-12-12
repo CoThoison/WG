@@ -1,14 +1,13 @@
 name: Pipeline
 
 on:
+  push:
+    branches:
+      - main
+      - feature/pipline
   workflow_dispatch:
-  workflow_call:
 
 jobs:
-  main:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Call Trivy
+    call_trivy:
         uses: ./.github/workflows/trivy.yml
+        secrets: inherit
