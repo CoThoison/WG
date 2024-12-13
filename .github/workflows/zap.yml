@@ -26,7 +26,7 @@ jobs:
         run: docker build -t my-app:${{ github.sha }} .
 
       - name: Use Docker to start the application locally
-        run: docker run -it -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 my-app:${{ github.sha }}
+        run: docker run -d -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 my-app:${{ github.sha }}
         
       - name: Change wait-for-it permissions
         run: chmod +x wait-for-it.sh
