@@ -1,4 +1,5 @@
 name: owasp_zap
+
 on:
   workflow_dispatch:
   workflow_call:
@@ -6,7 +7,7 @@ on:
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
-    name: Scan the webapplication
+    name: Scan the web application
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,22 +26,31 @@ jobs:
       - name: Build Docker Image
         run: docker build -t my-app:${{ github.sha }} .
 
+      - name: Set up custom hosts
+        run: echo "127.0.0.1 www.webgoat.local www.webwolf.local" | sudo tee -a /etc/hosts
+
       - name: Use Docker to start the application locally
-        run: docker run -d -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 my-app:${{ github.sha }}
+        run: |
+          docker run -d \
+            -p 8080:8080 \
+            -p 9090:9090 \
+            -e WEBGOAT_HOST=www.webgoat.local \
+            -e WEBWOLF_HOST=www.webwolf.local \
+            my-app:${{ github.sha }}
         
       - name: Change wait-for-it permissions
         run: chmod +x wait-for-it.sh
         
       - name: Wait for the application
-        run: ./wait-for-it.sh localhost:8080/WebGoat
-        
+        run: ./wait-for-it.sh www.webgoat.local:8080 --timeout=60 -- echo "WebGoat is ready!"
+
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.11.0
         with:
-          target: "http://host.docker.internal:8080/WebGoat"
+          target: "http://www.webgoat.local:8080/WebGoat"
           artifact_name: "zap_results"
           
-      - name: Upload result to GitHub Code Scanning
+      - name: Upload ZAP results
         uses: actions/upload-artifact@v3
         with:
           name: zap_results
