@@ -37,7 +37,7 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.11.0
         with:
-          target: "http://host.docker.internal:8080"
+          target: "http://host.docker.internal:9090"
           artifact_name: "zap_results"
           
       - name: Upload result to GitHub Code Scanning
