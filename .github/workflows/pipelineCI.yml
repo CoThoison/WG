@@ -1,0 +1,14 @@
+name: Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+    build_image:
+      uses: ./.github/workflows/build_img.yml
+      secrets: inherit
+
+    call_trivy:
+      needs: build_image  
+      uses: ./.github/workflows/trivy.yml
